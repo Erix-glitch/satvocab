@@ -10,6 +10,7 @@ interface FlashcardProps {
   quizStatus: 'idle' | 'playing' | 'review';
   showSuccessPulse: boolean;
   onFlip?: () => void;
+  onReviewAdvance?: () => void;
 }
 
 export function Flashcard({
@@ -19,12 +20,23 @@ export function Flashcard({
   mode,
   quizStatus,
   showSuccessPulse,
-  onFlip
+  onFlip,
+  onReviewAdvance
 }: FlashcardProps) {
+  const handleClick =
+    mode === 'study'
+      ? onFlip
+      : quizStatus === 'review'
+        ? onReviewAdvance
+        : undefined;
+
   return (
-    <div 
-      className="relative w-full aspect-3/2 mb-8 cursor-pointer"
-      onClick={mode === 'study' ? onFlip : undefined}
+    <div
+      className={cn(
+        "relative w-full aspect-3/2 mb-8",
+        handleClick ? 'cursor-pointer' : ''
+      )}
+      onClick={handleClick}
     >
       <div 
         className={cn(
@@ -64,7 +76,7 @@ export function Flashcard({
           
           {quizStatus === 'review' && (
              <div className="mt-8 flex flex-col items-center gap-2 animate-bounce">
-               <p className="text-sm font-medium opacity-90">Press Enter to continue</p>
+               <p className="text-sm font-medium opacity-90">Tap card or press Enter to continue</p>
                <Play className="w-5 h-5 fill-current" />
              </div>
           )}

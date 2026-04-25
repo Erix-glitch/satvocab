@@ -114,14 +114,19 @@ export default function VocabApp() {
     return next.idx;
   }, [cards, currentIndex, mastery]);
 
-  const pickNextDumbIndex = useCallback(() => {
-    if (cards.length === 0) return 0;
-    let nextIndex = Math.floor(Math.random() * cards.length);
-    if (nextIndex === currentIndex) {
-      nextIndex = (nextIndex + 1) % cards.length;
-    }
-    return nextIndex;
-  }, [cards, currentIndex, mastery]);
+  const handleShuffle = useCallback(() => {
+    if (cards.length <= 1) return;
+    setIsFlipped(false);
+    setCards(prev => {
+      const shuffled = [...prev];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    });
+    setCurrentIndex(0);
+  }, [cards.length]);
 
   const handleNext = useCallback(() => {
     setIsFlipped(false);
@@ -273,7 +278,7 @@ export default function VocabApp() {
           </div>
         )}
 
-        <Flashcard 
+        <Flashcard
           word={cards[currentIndex]?.word}
           definition={cards[currentIndex]?.definition}
           isFlipped={isFlipped}
@@ -281,6 +286,7 @@ export default function VocabApp() {
           quizStatus={quizStatus}
           showSuccessPulse={showSuccessPulse}
           onFlip={handleFlip}
+          onReviewAdvance={advanceToNext}
         />
 
         {mode === 'quiz' && (
@@ -298,7 +304,7 @@ export default function VocabApp() {
           <StudyControls 
             onPrev={handlePrev}
             onNext={handleNext}
-            onShuffle={() => setCurrentIndex(pickNextDumbIndex())}
+            onShuffle={handleShuffle}
           />
         )}
       </div>
