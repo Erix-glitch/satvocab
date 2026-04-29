@@ -1,22 +1,12 @@
 export const INITIAL_DATA = [
   // List 121
-  { id: 1, word: "receptive", definition: "willing to receive ideas or suggestions" },
   { id: 2, word: "recession", definition: "withdrawal, retreat, time of low economic activity" },
   { id: 3, word: "reciprocal", definition: "mutual, exchangeable" },
-  { id: 4, word: "reciprocate", definition: "repay" },
-  { id: 5, word: "recluse", definition: "hermit" },
-  { id: 6, word: "reconcile", definition: "make peace, come to term, bring into consonance" },
-  { id: 7, word: "recount", definition: "narrate or tell" },
-  { id: 8, word: "rectify", definition: "set right, correct" },
   { id: 9, word: "rectitude", definition: "uprightness, moral virtue" },
-  { id: 10, word: "redoubtable", definition: "formidable, causing fear" },
   // List 122
   { id: 11, word: "redress", definition: "compensation, remedy" },
   { id: 12, word: "redundant", definition: "superfluous, repetitious, wordy" },
   { id: 13, word: "refractory", definition: "stubborn, unmanageable" },
-  { id: 14, word: "refute", definition: "disprove" },
-  { id: 15, word: "reimburse", definition: "repay" },
-  { id: 16, word: "reiterate", definition: "state again, repeat" },
   { id: 17, word: "relegate", definition: "banish to an inferior position" },
   { id: 18, word: "relinquish", definition: "give up with reluctance, yield" },
   { id: 19, word: "relish", definition: "savor, enjoy" },
@@ -30,16 +20,10 @@ export const INITIAL_DATA = [
   { id: 26, word: "remunerative", definition: "compensating, rewarding" },
   { id: 27, word: "renegade", definition: "deserter, traitor" },
   { id: 28, word: "renounce", definition: "abandon, forswear" },
-  { id: 29, word: "renown", definition: "fame, reputation" },
   { id: 30, word: "renunciation", definition: "disclaiming, abstinence" },
   // List 124
   { id: 31, word: "repeal", definition: "revoke, annul" },
-  { id: 32, word: "repel", definition: "drive away, disgust" },
   { id: 33, word: "repercussion", definition: "reverberation, reaction, consequence" },
-  { id: 34, word: "replenish", definition: "fill up again" },
-  { id: 35, word: "replete", definition: "filled, abundantly supplied" },
-  { id: 36, word: "reprehensible", definition: "deserving blame" },
-  { id: 37, word: "repress", definition: "restrain, crush, suppress" },
   { id: 38, word: "reprimand", definition: "reprove severely, rebuke" },
   { id: 39, word: "reprisal", definition: "retaliation, revenge" },
   { id: 40, word: "reproach", definition: "criticize, express disapproval" },
@@ -52,6 +36,4 @@ export const INITIAL_DATA = [
   { id: 46, word: "repulsion", definition: "distaste, act of driving back" },
   { id: 47, word: "rescind", definition: "cancel" },
   { id: 48, word: "resigned", definition: "accepting one's fate, unresisting, submissive" },
-  { id: 49, word: "resilient", definition: "easily recovering or rebounding" },
-  { id: 50, word: "resolution", definition: "determination, resolve" }
 ];
