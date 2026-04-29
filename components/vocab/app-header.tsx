@@ -7,7 +7,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 interface AppHeaderProps {
   mode: 'study' | 'quiz';
-  selectedSet: string | number | null;
+  selectedLabel: string;
   score: number;
   timeLeft: number;
   quizStatus: 'idle' | 'playing' | 'review';
@@ -18,7 +18,7 @@ interface AppHeaderProps {
 
 export function AppHeader({
   mode,
-  selectedSet,
+  selectedLabel,
   score,
   timeLeft,
   quizStatus,
@@ -47,7 +47,7 @@ export function AppHeader({
       {mode === 'study' ? (
         <div className="flex flex-col gap-4 items-center">
           <Badge variant="secondary" className="text-sm px-4 py-1">
-            Studying: {selectedSet === 'all' ? 'All Words' : `Set ${selectedSet}`}
+            Studying: {selectedLabel}
           </Badge>
           <Button 
             onClick={onStartQuiz}

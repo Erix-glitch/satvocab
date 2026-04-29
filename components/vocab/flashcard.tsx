@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 interface FlashcardProps {
   word?: string;
   definition?: string;
+  example?: string;
   isFlipped: boolean;
   mode: 'study' | 'quiz';
   quizStatus: 'idle' | 'playing' | 'review';
@@ -13,9 +14,31 @@ interface FlashcardProps {
   onReviewAdvance?: () => void;
 }
 
+/**
+ * Highlights all occurrences of the word (and common variants) in the example
+ * sentence by wrapping them in <strong> tags.
+ */
+function highlightWord(example: string, word: string) {
+  // Strip parenthetical like "(noun)" or "(verb)" from the word
+  const baseWord = word.replace(/\s*\(.*?\)\s*/g, '').trim();
+  if (!baseWord) return example;
+
+  // Escape regex special chars, match the base word and common suffixes
+  const escaped = baseWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`(${escaped}\\w*)`, 'gi');
+
+  const parts = example.split(pattern);
+  return parts.map((part, i) =>
+    pattern.test(part)
+      ? <strong key={i} className="font-extrabold underline decoration-2 underline-offset-2">{part}</strong>
+      : part
+  );
+}
+
 export function Flashcard({
   word,
   definition,
+  example,
   isFlipped,
   mode,
   quizStatus,
@@ -61,12 +84,12 @@ export function Flashcard({
         {/* Back Face */}
         <div 
           className={cn(
-            "absolute w-full h-full backface-hidden rounded-xl flex flex-col items-center justify-center p-8 text-center rotate-y-180 border shadow-sm",
+            "absolute w-full h-full backface-hidden rounded-xl flex flex-col items-center justify-center p-8 text-center rotate-y-180 border shadow-sm overflow-y-auto",
             quizStatus === 'review' ? 'bg-destructive text-destructive-foreground' : 'bg-primary text-primary-foreground'
           )}
         >
           <span className={cn(
-            "text-xs font-bold uppercase tracking-widest mb-4 opacity-80",
+            "text-xs font-bold uppercase tracking-widest mb-3 opacity-80",
           )}>
             {quizStatus === 'review' ? `MISTAKE: ${word}` : 'Definition'}
           </span>
@@ -74,8 +97,17 @@ export function Flashcard({
             &quot;{definition}&quot;
           </p>
           
+          {example && (
+            <div className="mt-4 pt-4 border-t border-current/20 w-full">
+              <span className="text-[10px] font-bold uppercase tracking-widest opacity-50 mb-2 block">Example</span>
+              <p className="text-sm md:text-base leading-relaxed opacity-90 italic">
+                &ldquo;{word ? highlightWord(example, word) : example}&rdquo;
+              </p>
+            </div>
+          )}
+          
           {quizStatus === 'review' && (
-             <div className="mt-8 flex flex-col items-center gap-2 animate-bounce">
+             <div className="mt-6 flex flex-col items-center gap-2 animate-bounce">
                <p className="text-sm font-medium opacity-90">Tap card or press Enter to continue</p>
                <Play className="w-5 h-5 fill-current" />
              </div>

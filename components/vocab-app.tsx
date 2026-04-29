@@ -11,12 +11,12 @@ import { AppHeader } from './vocab/app-header';
 import { Flashcard } from './vocab/flashcard';
 import { QuizInput } from './vocab/quiz-input';
 import { StudyControls } from './vocab/study-controls';
-import { StatsView } from './vocab/stats-view';
 
 interface Word {
   id: number;
   word: string;
   definition: string;
+  example: string;
 }
 
 const checkAnswer = (userText: string, targetText: string) => {
@@ -35,8 +35,7 @@ const checkAnswer = (userText: string, targetText: string) => {
 };
 
 export default function VocabApp() {
-  const [showStats, setShowStats] = useState(false);
-  const [selectedSet, setSelectedSet] = useState<string | number | null>(null);
+  const [selectedSets, setSelectedSets] = useState<(string | number)[] | null>(null);
   const [cards, setCards] = useState<Word[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -86,17 +85,27 @@ export default function VocabApp() {
     return sets;
   }, []);
 
-  const handleSelectSet = (setId: string | number) => {
-    if (setId === 'all') {
-      setCards(INITIAL_DATA);
-      setSelectedSet('all');
+  // Build a label string describing which sets are active
+  const selectedLabel = useMemo(() => {
+    if (!selectedSets) return '';
+    if (selectedSets.includes('all')) return 'All Words';
+    return selectedSets.map(id => `Set ${id}`).join(', ');
+  }, [selectedSets]);
+
+  const handleSelectSets = (setIds: (string | number)[]) => {
+    let combined: Word[] = [];
+    if (setIds.includes('all')) {
+      combined = INITIAL_DATA;
     } else {
-      const foundSet = wordSets.find(s => s.id === setId);
-      if (foundSet) {
-        setCards(foundSet.words);
-        setSelectedSet(setId);
+      for (const id of setIds) {
+        const foundSet = wordSets.find(s => s.id === id);
+        if (foundSet) {
+          combined = combined.concat(foundSet.words);
+        }
       }
     }
+    setCards(combined);
+    setSelectedSets(setIds);
     setCurrentIndex(0);
     setIsFlipped(false);
   };
@@ -222,7 +231,7 @@ export default function VocabApp() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (selectedSet === null) return;
+      if (selectedSets === null) return;
       if (mode === 'study') {
         if (e.key === 'ArrowRight') handleNext();
         if (e.key === 'ArrowLeft') handlePrev();
@@ -239,14 +248,10 @@ export default function VocabApp() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, isFlipped, cards, mode, quizStatus, selectedSet, handleNext, handlePrev, handleFlip, advanceToNext]);
+  }, [currentIndex, isFlipped, cards, mode, quizStatus, selectedSets, handleNext, handlePrev, handleFlip, advanceToNext]);
 
-  if (showStats) {
-    return <StatsView mastery={mastery} onBack={() => setShowStats(false)} />;
-  }
-
-  if (selectedSet === null) {
-    return <SetSelection wordSets={wordSets} onSelectSet={handleSelectSet} onShowStats={() => setShowStats(true)} />;
+  if (selectedSets === null) {
+    return <SetSelection wordSets={wordSets} onSelectSets={handleSelectSets} />;
   }
 
   return (
@@ -257,11 +262,11 @@ export default function VocabApp() {
       
       <AppHeader 
         mode={mode}
-        selectedSet={selectedSet}
+        selectedLabel={selectedLabel}
         score={score}
         timeLeft={timeLeft}
         quizStatus={quizStatus}
-        onBack={() => setSelectedSet(null)}
+        onBack={() => setSelectedSets(null)}
         onStartQuiz={startQuiz}
         onReset={handleReset}
       />
@@ -281,6 +286,7 @@ export default function VocabApp() {
         <Flashcard
           word={cards[currentIndex]?.word}
           definition={cards[currentIndex]?.definition}
+          example={cards[currentIndex]?.example}
           isFlipped={isFlipped}
           mode={mode}
           quizStatus={quizStatus}
